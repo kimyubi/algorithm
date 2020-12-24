@@ -27,11 +27,33 @@ class Solution:
                 if 0 <= nx < r and 0 <= ny < c and (nx,ny) not in visited:
                     alt = abs(heights[x][y] - heights[nx][ny])
                     heapq.heappush(Q, (alt,nx,ny))
-                    
         
         return result
-            
-        
-    
-        # visited로 방문한 좌표 처리하지 않으면 무한 순회/ 방문한 좌표 처리하면 다른 길로 탐색할 때 탐색에 제약이 있어 최소 effort가 구해지지 않음.
 
+
+class Solution:
+    def minimumEffortPath(self, heights: List[List[int]]) -> int:
+        if not heights:
+            return 0
+
+        r, c = len(heights), len(heights[0])
+        heap = [(0,0,0)]
+        res = 0
+        visited = set()
+	
+        while heap:
+            # Always pop up the smaller abs distance 
+            d, x, y = heapq.heappop(heap)
+
+            res = max(res, d)
+            if (x, y) == (r-1, c-1):
+                return res
+            visited.add((x, y))
+        
+            for nx, ny in (x+1, y), (x-1,y), (x, y+1), (x, y-1):
+                if nx >= 0 and nx < r and ny >= 0 and ny < c and (nx, ny) not in visited:
+                    nd = abs(heights[nx][ny] - heights[x][y])
+                    heapq.heappush(heap, (nd, nx, ny))
+
+        return res
+        
